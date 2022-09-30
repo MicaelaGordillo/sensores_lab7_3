@@ -85,6 +85,7 @@ footer{
   text-align: center; 
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 12px;
+  z-index: 100;
 }
 html {
   text-align: center;

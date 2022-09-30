@@ -59,6 +59,34 @@ void initWiFi() {
   // Imprimimos la ip que le ha dado nuestro router
   Serial.println(WiFi.localIP());
 }
+String getRSSI(){
+  return String(WiFi.RSSI());
+}
+String processor(const String& var){
+    Serial.print(var+" : ");
+    if (var == "IP"){
+      return String(WiFi.localIP().toString().c_str());
+    }
+    else if (var == "HOSTNAME"){
+      return String(WiFi.getHostname());
+    }
+    else if (var == "STATUS"){
+      return String(WiFi.status());
+    }
+    else if (var == "SSID"){
+      return String(WiFi.SSID().c_str());
+    }
+    else if (var == "PSK"){
+      return String(WiFi.psk().c_str());
+    }
+    else if (var == "BSSID"){
+      return String(WiFi.BSSIDstr().c_str());
+    }
+    else if (var == "RSSI"){
+      return String(WiFi.RSSI());
+    }
+}
+
 
 void setup() {
   Serial.begin(115200);
@@ -66,10 +94,12 @@ void setup() {
   initWiFi();
   initFS();
 
-  // Web Server Root URL
+ 
+   // Ruta para cargar el archivo index.html
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html", "text/html");
+    request->send(SPIFFS, "/index.html", String(), false, processor);
   });
+
 
   server.serveStatic("/", SPIFFS, "/");
   
@@ -78,6 +108,11 @@ void setup() {
     String json = getSensorReadings();
     request->send(200, "application/json", json);
     json = String();
+  });
+
+  // Ruta para poner el GPIO alto
+  server.on("/RSSI", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain",getRSSI().c_str());
   });
 
   events.onConnect([](AsyncEventSourceClient *client){

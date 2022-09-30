@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>MYN | LAB 7.3</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -11,7 +12,40 @@
   <body>
     <header>
       <img src="https://raw.githubusercontent.com/MicaelaGordillo/IOT_2/main/EjemploST_3/images/logo/myn.png" alt="logo">
-      <h1>Sensor de temperatura</h1>
+      <h1 style="z-index: 100; background-color:white;">Sensor de temperatura</h1>
+      <div id="contenedor" style="display: grid;position: absolute; top: 10px;right: 0; width: 200px;">
+        <img id="imgPotencia" src="" alt="">
+        <p id="valorPotencia">%RSSI%</p>
+      </div>
+      <script>
+        actualizarPotencia();
+        function actualizarPotencia(){
+          var valor = parseInt(document.getElementById("valorPotencia").innerText);
+          if(valor>=(-40)){
+            document.getElementById("imgPotencia").src = "https://i.ibb.co/3hwW4kK/wifi.jpg";
+          }else if(valor<(-40)&&valor>=(-50)){
+            document.getElementById("imgPotencia").src = "https://i.ibb.co/7SmCNzN/wifi2.jpg";
+  
+          }else if(valor<(-50)&&valor>=(-60)){
+            document.getElementById("imgPotencia").src = "https://i.ibb.co/zJF9dgB/wifi3.jpg";
+  
+          }else if(valor<(-60)){
+            document.getElementById("imgPotencia").src = "https://i.ibb.co/Sr0VFW3/wifi4.jpg";
+          }
+        }
+        setInterval(function ( ) {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              document.getElementById("valorPotencia").innerText = this.responseText;
+              document.getElementById("valorRSSI").innerText = this.responseText;
+              actualizarPotencia();
+            }
+          };
+          xhttp.open("GET", "/RSSI", true);
+          xhttp.send();
+        }, 10000 ) ;
+      </script>
     </header>
     <div style="height: 120px;"></div>
     <div>
@@ -29,6 +63,41 @@
           <canvas id="gauge-humidity"></canvas>
         </div>
       </div>
+    </div>
+    <div>
+      <h1>Informacion de la conexión </h1> 
+      <center>
+      <div style='width: 90vw; transition: 1s;' class='ampliacion'>
+        <table class="styled-table">
+          <thead>
+          <tr><th style=' padding: 20px;'>IP Local</th><th style=' padding: 20px; '>Host Name</th><th style=' padding: 20px; '>Status</th><th style=' padding: 20px; '>SSID</th><th style=' padding: 20px; '>PSK</th><th style=' padding: 20px; '>BSSID</th><th style=' padding: 20px; '>RSSI</th></tr>
+          </thead>
+          <tr>
+          <td style='padding: 20px;text-align: center;'class='changecolor'>
+            %IP%  
+          </td>
+          <td style='padding: 20px;text-align: center;'class='changecolor'>
+            %HOSTNAME%
+          </td>
+          <td style='padding: 20px;text-align: center;'class='changecolor'>
+            %STATUS%
+          </td>
+          <td style='padding: 20px;text-align: center;'class='changecolor'>
+            %SSID%
+          </td>
+          <td style='padding: 20px;text-align: center;'class='changecolor'>
+            %PSK% 
+          </td>
+          <td style='padding: 20px;text-align: center;'class='changecolor'>
+            %BSSID%  
+          </td>
+          <td style='padding: 20px;text-align: center;'class='changecolor' id="valorRSSI">
+            %RSSI%
+          </td> 
+          </tr>
+        </table>
+      </div>
+      </center>
     </div>
     <script src="script.js"></script>
     <br><br>
